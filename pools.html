@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pool List</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #0c0e2c;
+      color: white;
+      overflow-x: hidden; /* Prevent horizontal scrolling */
+    }
+    * {
+      box-sizing: border-box;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .title {
+      font-size: 28px;
+      font-weight: bold;
+    }
+    .wallet-button {
+      padding: 12px 20px;
+      background-color: #ffcd38;
+      color: black;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .search-box {
+      margin-bottom: 20px;
+      width: 100%;
+    }
+    .search-box input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      background-color: #1d2143;
+      color: white;
+    }
+    .pool-list {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .pool-item {
+      background-color: #1d2143;
+      padding: 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      text-align: center;
+      width: 100%;
+      min-width: 200px;
+      flex: 1;
+      margin-bottom: 20px;
+    }
+    .pool-item:hover {
+      background-color: #2c2f5b;
+    }
+    .pool-item .name {
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .pool-item .details {
+      font-size: 14px;
+      color: #aaa;
+    }
+    .pool-item .percentage {
+      font-size: 16px;
+      color: #4cf58c;
+      margin-top: 10px;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .wallet-button {
+        width: 100%;
+        margin-top: 15px;
+      }
+      .pool-list {
+        flex-direction: column;
+        align-items: center;
+      }
+      .pool-item {
+        width: 100%; /* Full width for mobile */
+        margin-bottom: 15px;
+      }
+    }
+
+    /* For very small screens (less than 480px) */
+    @media (max-width: 480px) {
+      .title {
+        font-size: 22px;
+      }
+      .pool-item .name {
+        font-size: 18px;
+      }
+      .pool-item .percentage {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="title">Select a Pool</div>
+      <button class="wallet-button">Connect Wallet</button>
+    </div>
+
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search for pools...">
+    </div>
+
+    <div class="pool-list" id="poolList">
+      <!-- Fake Pools are injected here for now -->
+      <div class="pool-item" onclick="window.location.href='https://liquidity-balancer-ui.vercel.app/'">
+        <div class="name">SOL / USDC</div>
+        <div class="details">TVL: $500,000</div>
+        <div class="percentage">0.04%</div>
+      </div>
+
+      <div class="pool-item" onclick="window.location.href='pool-setup.html'">
+        <div class="name">Fartcoin / SOL</div>
+        <div class="details">TVL: $1,200,000</div>
+        <div class="percentage">0.16%</div>
+      </div>
+
+      <div class="pool-item" onclick="window.location.href='pool-setup.html'">
+        <div class="name">JLP / USDC</div>
+        <div class="details">TVL: $200,000</div>
+        <div class="percentage">0.02%</div>
+      </div>
+
+      <div class="pool-item" onclick="window.location.href='https://liquidity-balancer-ui.vercel.app/'">
+        <div class="name">SOL / USDT</div>
+        <div class="details">TVL: $100,000</div>
+        <div class="percentage">0.02%</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Function to fetch and display pools from the backend
+    function fetchPools(searchQuery = '') {
+      fetch(`/api/pools?search=${searchQuery}`)
+        .then(response => response.json())
+        .then(data => {
+          const poolListContainer = document.getElementById('poolList');
+          poolListContainer.innerHTML = ''; // Clear existing pools
+
+          if (data.length === 0) {
+            poolListContainer.innerHTML = '<p>No pools found.</p>'; // Show message if no pools are found
+          }
+
+          data.forEach(pool => {
+            const poolItem = document.createElement('div');
+            poolItem.classList.add('pool-item');
+            poolItem.onclick = () => window.location.href = 'pool-setup.html'; // Navigate to setup page
+
+            poolItem.innerHTML = `
+              <div class="name">${pool.name}</div>
+              <div class="details">TVL: ${pool.tvl}</div>
+              <div class="percentage">${pool.percentage}</div>
+            `;
+
+            poolListContainer.appendChild(poolItem);
+          });
+        })
+        .catch(error => console.error('Error fetching pools:', error));
+    }
+
+    // Initial fetch of pools when the page loads
+    window.addEventListener('DOMContentLoaded', () => {
+      fetchPools();
+
+      // Handle search input change
+      const searchInput = document.getElementById('searchInput');
+      searchInput.addEventListener('input', (event) => {
+        fetchPools(event.target.value);
+      });
+    });
+  </script>
+</body>
+</html>
