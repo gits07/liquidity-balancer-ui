@@ -53,6 +53,33 @@
       background-color: #1d2143;
       color: white;
     }
+
+    /* New Section Above Pool List */
+    .stats-section {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .stats-item {
+      background-color: #1d2143;
+      padding: 15px 25px;
+      border-radius: 8px;
+      text-align: center;
+      width: 23%;
+      margin: 5px;
+    }
+    .stats-item span {
+      display: block;
+      font-size: 18px;
+      margin-top: 10px;
+    }
+    .stats-item p {
+      font-size: 14px;
+      color: #aaa;
+    }
+
+    /* Pool List Styling */
     .pool-list {
       display: flex;
       gap: 20px;
@@ -88,6 +115,18 @@
       margin-top: 10px;
     }
 
+    /* Volume and Fees Section for Each Pool Item */
+    .pool-item .volume-fees {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      font-size: 14px;
+      color: #aaa;
+    }
+    .pool-item .volume-fees div {
+      width: 45%;
+    }
+
     /* Mobile Responsiveness */
     @media (max-width: 768px) {
       .header {
@@ -97,6 +136,14 @@
       .wallet-button {
         width: 100%;
         margin-top: 15px;
+      }
+      .stats-section {
+        flex-direction: column;
+        align-items: center;
+      }
+      .stats-item {
+        width: 80%; /* Full width for mobile */
+        margin-bottom: 10px;
       }
       .pool-list {
         flex-direction: column;
@@ -133,30 +180,67 @@
       <input type="text" id="searchInput" placeholder="Search for pools...">
     </div>
 
+    <!-- New Stats Section Above Pool List -->
+    <div class="stats-section">
+      <div class="stats-item">
+        <div>Total Value Locked (TVL)</div>
+        <span>$500,000</span>
+      </div>
+      <div class="stats-item">
+        <div>24H Volume</div>
+        <span>$1,200,000</span>
+      </div>
+      <div class="stats-item">
+        <div>Fees</div>
+        <span>$3,000</span>
+      </div>
+      <div class="stats-item">
+        <div>APR</div>
+        <span>12.34%</span>
+      </div>
+    </div>
+
+    <!-- Pool List -->
     <div class="pool-list" id="poolList">
       <!-- Fake Pools are injected here for now -->
       <div class="pool-item" onclick="window.location.href='https://liquidity-balancer-ui.vercel.app/'">
         <div class="name">SOL / USDC</div>
         <div class="details">TVL: $500,000</div>
         <div class="percentage">0.04%</div>
+        <div class="volume-fees">
+          <div>Volume: $200,000</div>
+          <div>Fees: $500</div>
+        </div>
       </div>
 
       <div class="pool-item" onclick="window.location.href='pool-setup.html'">
         <div class="name">Fartcoin / SOL</div>
         <div class="details">TVL: $1,200,000</div>
         <div class="percentage">0.16%</div>
+        <div class="volume-fees">
+          <div>Volume: $500,000</div>
+          <div>Fees: $1,200</div>
+        </div>
       </div>
 
       <div class="pool-item" onclick="window.location.href='pool-setup.html'">
         <div class="name">JLP / USDC</div>
         <div class="details">TVL: $200,000</div>
         <div class="percentage">0.02%</div>
+        <div class="volume-fees">
+          <div>Volume: $50,000</div>
+          <div>Fees: $100</div>
+        </div>
       </div>
 
       <div class="pool-item" onclick="window.location.href='https://liquidity-balancer-ui.vercel.app/'">
         <div class="name">SOL / USDT</div>
         <div class="details">TVL: $100,000</div>
         <div class="percentage">0.02%</div>
+        <div class="volume-fees">
+          <div>Volume: $25,000</div>
+          <div>Fees: $50</div>
+        </div>
       </div>
     </div>
   </div>
@@ -183,6 +267,10 @@
               <div class="name">${pool.name}</div>
               <div class="details">TVL: ${pool.tvl}</div>
               <div class="percentage">${pool.percentage}</div>
+              <div class="volume-fees">
+                <div>Volume: ${pool.volume}</div>
+                <div>Fees: ${pool.fees}</div>
+              </div>
             `;
 
             poolListContainer.appendChild(poolItem);
