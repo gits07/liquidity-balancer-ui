@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SOL / USDC - Provide Liquidity</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liquidity UI</title>
   <style>
     body {
       margin: 0;
@@ -17,10 +16,31 @@
       margin: 0 auto;
       padding: 20px;
     }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
     .title {
       font-size: 28px;
       font-weight: bold;
+    }
+    .wallet-button {
+      padding: 12px 20px;
+      background-color: #ffcd38;
+      color: black;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .chart-wrapper {
+      width: 100%;
+      height: 500px;
       margin-bottom: 20px;
+      background-color: #11142d;
+      border-radius: 10px;
     }
     .mode-buttons {
       display: flex;
@@ -35,19 +55,16 @@
       border-radius: 6px;
       cursor: pointer;
     }
-    .chart-wrapper {
-      width: 100%;
-      height: 500px;
-      margin-bottom: 20px;
-      background-color: #11142d;
-      border-radius: 10px;
+    .range-section {
+      display: none;
     }
-    .range-inputs {
+    .range-inputs, .slider-box {
       display: flex;
-      gap: 10px;
+      justify-content: space-between;
+      gap: 20px;
       margin-bottom: 20px;
     }
-    .range-inputs input {
+    .range-inputs input, .slider-box input {
       flex: 1;
       padding: 10px;
       border-radius: 6px;
@@ -70,94 +87,102 @@
       margin-top: 10px;
       font-size: 18px;
     }
-    .slider-box {
-      background-color: #1d2143;
-      padding: 20px;
-      border-radius: 10px;
+    .deposit-section {
+      display: flex;
+      gap: 20px;
       margin-bottom: 20px;
     }
-    .slider {
-      width: 100%;
+    .deposit-box {
+      flex: 1;
+      background-color: #1d2143;
+      padding: 15px;
+      border-radius: 10px;
     }
-    .deposit-section input {
+    .deposit-box label {
+      display: block;
+      margin-bottom: 6px;
+    }
+    .deposit-box input {
       width: 100%;
       padding: 10px;
       border-radius: 6px;
       border: none;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
-    .wallet-button {
-      padding: 15px 25px;
-      background-color: #ffcd38;
-      color: black;
-      font-weight: bold;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
+    .deposit-box .amount {
+      font-size: 14px;
+      color: #aaa;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="title">SOL / USDC - Provide Liquidity</div>
-    <div class="mode-buttons">
-      <button>Full</button>
-      <button>Custom</button>
+    <div class="header">
+      <div class="title">SOL / USDC - Provide Liquidity</div>
+      <button class="wallet-button">Connect Wallet</button>
     </div>
 
     <div class="chart-wrapper">
       <div id="tradingview_chart" style="height: 100%;"></div>
     </div>
 
-    <div class="range-inputs">
-      <input type="number" id="minPriceInput" placeholder="Min Price (e.g. 171.99)">
-      <input type="number" id="maxPriceInput" placeholder="Max Price (e.g. 181.03)">
+    <div class="mode-buttons">
+      <button onclick="setMode('full')">Full Range</button>
+      <button onclick="setMode('custom')">Custom Range</button>
     </div>
 
-    <div class="info-boxes">
+    <div id="info-boxes" class="info-boxes">
       <div class="info-box">
         Estimated Yield (24H)
-        <span style="color: #4cf58c;">2.08%</span>
+        <span id="apr-display" style="color: #4cf58c;">2.08%</span>
       </div>
       <div class="info-box">
         Deposit Ratio
-        <span>53.5% SOL / 46.5% USDC</span>
+        <span id="deposit-ratio">53.5% SOL / 46.5% USDC</span>
       </div>
     </div>
 
-    <div class="slider-box">
-      <label for="minPriceSlider">Min Price</label>
-      <input type="range" id="minPriceSlider" class="slider" min="150" max="200" step="0.01">
-      <label for="maxPriceSlider">Max Price</label>
-      <input type="range" id="maxPriceSlider" class="slider" min="150" max="200" step="0.01">
+    <div id="custom-range" class="range-section">
+      <div class="slider-box">
+        <div style="flex:1">
+          <label for="minPriceSlider">Min Price</label>
+          <input type="range" id="minPriceSlider" min="150" max="200" step="0.01">
+        </div>
+        <div style="flex:1">
+          <label for="maxPriceSlider">Max Price</label>
+          <input type="range" id="maxPriceSlider" min="150" max="200" step="0.01">
+        </div>
+      </div>
+      <div class="range-inputs">
+        <input type="number" id="minPriceInput" placeholder="Min Price">
+        <input type="number" id="maxPriceInput" placeholder="Max Price">
+      </div>
     </div>
 
     <div class="deposit-section">
-      <input type="text" placeholder="Deposit Amount (0.00)">
-      <button class="wallet-button">Connect Wallet</button>
+      <div class="deposit-box">
+        <label for="deposit-sol">Deposit SOL</label>
+        <input type="text" id="deposit-sol" placeholder="0.00">
+        <div class="amount">$0.00</div>
+      </div>
+      <div class="deposit-box">
+        <label for="deposit-usdc">Deposit USDC</label>
+        <input type="text" id="deposit-usdc" placeholder="0.00">
+        <div class="amount">$0.00</div>
+      </div>
     </div>
   </div>
 
   <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
   <script>
+    let mode = 'custom';
     let tvWidget;
-    let minLine, maxLine;
 
-    function createLine(price, color) {
-      return tvWidget.activeChart().createShape(
-        { price: price, time: Date.now() / 1000 },
-        {
-          shape: 'horizontal_line',
-          overrides: { color: color, linewidth: 2 },
-          lock: true
-        }
-      );
-    }
-
-    function updateLine(line, price) {
-      if (line) {
-        line.setPrice(price);
-      }
+    function setMode(selected) {
+      mode = selected;
+      document.getElementById('custom-range').style.display = mode === 'custom' ? 'block' : 'none';
+      document.getElementById('apr-display').textContent = mode === 'custom' ? '2.08%' : '1.12%';
+      document.getElementById('deposit-ratio').textContent = mode === 'custom' ? '53.5% SOL / 46.5% USDC' : '50% SOL / 50% USDC';
     }
 
     function initializeChart() {
@@ -173,42 +198,14 @@
         enable_publishing: false,
         allow_symbol_change: false,
         container_id: "tradingview_chart",
-        studies: ["Volume@tv-basicstudies"],
-        withdateranges: true,
-        hide_side_toolbar: false,
-        details: true,
-        hotlist: true,
-        calendar: true,
-        news: ["headlines"]
-      });
-
-      tvWidget.onChartReady(function() {
-        const minPrice = parseFloat(document.getElementById('minPriceSlider').value);
-        const maxPrice = parseFloat(document.getElementById('maxPriceSlider').value);
-        minLine = createLine(minPrice, '#FF0000');
-        maxLine = createLine(maxPrice, '#00FF00');
+        studies: ["Volume@tv-basicstudies"]
       });
     }
 
-    function updateInputs() {
-      const minSlider = document.getElementById('minPriceSlider');
-      const maxSlider = document.getElementById('maxPriceSlider');
-      const minInput = document.getElementById('minPriceInput');
-      const maxInput = document.getElementById('maxPriceInput');
-
-      minInput.value = minSlider.value;
-      maxInput.value = maxSlider.value;
-
-      if (tvWidget && tvWidget.activeChart()) {
-        updateLine(minLine, parseFloat(minSlider.value));
-        updateLine(maxLine, parseFloat(maxSlider.value));
-      }
-    }
-
-    document.getElementById('minPriceSlider').addEventListener('input', updateInputs);
-    document.getElementById('maxPriceSlider').addEventListener('input', updateInputs);
-
-    window.addEventListener('DOMContentLoaded', initializeChart);
+    window.addEventListener('DOMContentLoaded', () => {
+      setMode('custom');
+      initializeChart();
+    });
   </script>
 </body>
 </html>
