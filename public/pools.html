@@ -53,6 +53,33 @@
       background-color: #1d2143;
       color: white;
     }
+
+    /* New Section Above Pool List */
+    .stats-section {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .stats-item {
+      background-color: #1d2143;
+      padding: 15px 25px;
+      border-radius: 8px;
+      text-align: center;
+      width: 23%;
+      margin: 5px;
+    }
+    .stats-item span {
+      display: block;
+      font-size: 18px;
+      margin-top: 10px;
+    }
+    .stats-item p {
+      font-size: 14px;
+      color: #aaa;
+    }
+
+    /* Pool List Styling */
     .pool-list {
       display: flex;
       gap: 20px;
@@ -98,6 +125,14 @@
         width: 100%;
         margin-top: 15px;
       }
+      .stats-section {
+        flex-direction: column;
+        align-items: center;
+      }
+      .stats-item {
+        width: 80%; /* Full width for mobile */
+        margin-bottom: 10px;
+      }
       .pool-list {
         flex-direction: column;
         align-items: center;
@@ -133,9 +168,30 @@
       <input type="text" id="searchInput" placeholder="Search for pools...">
     </div>
 
+    <!-- New Stats Section Above Pool List -->
+    <div class="stats-section">
+      <div class="stats-item">
+        <div>Total Value Locked (TVL)</div>
+        <span>$500,000</span>
+      </div>
+      <div class="stats-item">
+        <div>24H Volume</div>
+        <span>$1,200,000</span>
+      </div>
+      <div class="stats-item">
+        <div>Fees</div>
+        <span>$3,000</span>
+      </div>
+      <div class="stats-item">
+        <div>APR</div>
+        <span>12.34%</span>
+      </div>
+    </div>
+
+    <!-- Pool List -->
     <div class="pool-list" id="poolList">
       <!-- Fake Pools are injected here for now -->
-      <div class="pool-item" onclick="window.location.href='https://liquidity-balancer-ui.vercel.app/'">
+      <div class="pool-item" onclick="window.location.href='https://liquidity-balancer-ui.vercel.app/pools'">
         <div class="name">SOL / USDC</div>
         <div class="details">TVL: $500,000</div>
         <div class="percentage">0.04%</div>
@@ -153,7 +209,7 @@
         <div class="percentage">0.02%</div>
       </div>
 
-      <div class="pool-item" onclick="window.location.href='https://liquidity-balancer-ui.vercel.app/'">
+      <div class="pool-item" onclick="window.location.href='https://liquidity-balancer-ui.vercel.app/pools'">
         <div class="name">SOL / USDT</div>
         <div class="details">TVL: $100,000</div>
         <div class="percentage">0.02%</div>
